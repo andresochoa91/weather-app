@@ -13,3 +13,11 @@ img{
   width: 40px;
   height: auto;
 }
+
+span {
+  font-weight: bold;
+}
+
+p {
+  text-transform: capitalize;
+}
