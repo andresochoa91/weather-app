@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Megrim&display=swap" rel="stylesheet">
     <link href= "index.css" rel="stylesheet"></link>
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
   </head>
   <body>
 
@@ -21,9 +24,17 @@
               <button class="btn btn-outline-info" type="button" id="search">Search</button>
           </div>
         </div>
+        <div class="map mt-5">
+          <h2 class="mb-4">My Map</h2>
+          <div id="map"></div>
+          <p id="cityMap"></p>
+          <p id="countryMap"></p>
+          <p id="lon"></p>
+          <p id="lat"></p>
+        </div>
       </div>
-      <div id="info">
 
+      <div id="info">
       </div>
 
       <table class="table table-dark d-none">
@@ -38,7 +49,6 @@
         <tbody>
         </tbody>
       </table>
-
     </div>
     <script type="text/javascript" src="weather.js"></script>
   </body>

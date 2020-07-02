@@ -21,3 +21,10 @@ span {
 p {
   text-transform: capitalize;
 }
+
+#map {
+  display: inline-block;
+  margin: auto;
+  height: 400px;
+  width: 600px;
+}
