@@ -1,4 +1,5 @@
 const openWeatherApiKey = "115d1787d75817135c5ddd81a0a676f4";
+let daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 let tbody =  document.querySelector("tbody");
 let info = document.querySelector("#info");
 let input = document.querySelector("#city");
@@ -16,9 +17,7 @@ L.tileLayer("https://api.maptiler.com/maps/streets/256/{z}/{x}/{y}.png?key=cg31I
 
 map.on('click', onMapClick);
 
-
 function onMapClick(event) {
-  // console.log(event)
   let lat = event.latlng.lat;
   let lon = event.latlng.lng;
 
@@ -27,13 +26,7 @@ function onMapClick(event) {
     .then(data => {
       let city = data.name;
       let country = data.sys.country;
-      
-      if (city) {
-        var popup = L.popup()
-          .setLatLng([lat, lon])
-          .setContent(city)
-          .openOn(map);
-      }
+
       generateContent(city, country, lat, lon);
     }) 
 }
@@ -42,6 +35,10 @@ function onMapClick(event) {
 input.addEventListener("keyup", (event) => {
   tempCity = event.target.value;
 });
+
+function clickModal () {
+  document.querySelector("#btn-modal").click();
+}
 
 function weekTable (lat, lon, currentWeather) {
   document.querySelector("table").classList.remove("d-none");
@@ -56,14 +53,11 @@ function weekTable (lat, lon, currentWeather) {
       }
 
       let days = "";
-      let daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
       for (let i = 0; i < data.daily.length; i++) {
-        
-        
+               
         let currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() + i);
-        
+        currentDate.setDate(currentDate.getDate() + i);       
         let dayOfWeek = (daysOfWeek[currentDate.getDay()]);
 
         if (i === 0) {
@@ -79,16 +73,14 @@ function weekTable (lat, lon, currentWeather) {
         let icon = `http://openweathermap.org/img/wn/${data.daily[i].weather[0].icon}@2x.png`;
         days += `
           <tr>
-            <th scope="row">${dayOfWeek}</th>
-            <th scope="row">${currentDate}</th>
-            <td>${min}</td>
-            <td>${max}</td>
-            <td><img src="${icon}"></td>
+            <td scope="row">${dayOfWeek}. ${currentDate}</td>
+            <td scope="row">${min} °F</td>
+            <td scope="row">${max} °F</td>
+            <td scope="row"><img src="${icon}"></td>
           </tr>
         `;
       }
       tbody.innerHTML = days;
-      document.querySelector("#btn-modal").click();
     })
     .catch(err => console.log(err)); 
 }
@@ -100,13 +92,24 @@ function generateContent (city, country, lat, lon, currentWeather) {
     cityTag = `<p><span>City:</span> ${city}</p>`
   }
   if (country) {
-    countryTag = `<p><span>City:</span> ${country}</p>`
+    countryTag = `<p><span>Country:</span> ${country}</p>`
   } 
   info.innerHTML = `
     ${cityTag}
     ${countryTag}
-    <p id="current-weather"><span>Current Weather:</span> ${currentWeather}</p>
+    <p id="current-weather" class="mb-3"><span>Current Weather:</span> ${currentWeather}</p>
   `;
+  if (city) {
+    var popup = L.popup()
+      .setLatLng([lat, lon])
+      .setContent(
+        `
+          <p>${city}, ${country}</p>
+          <button onclick="clickModal()">Weather info</button>
+        `
+      )
+      .openOn(map);
+  }
   weekTable(lat, lon, currentWeather);
 } 
 
@@ -120,7 +123,7 @@ function weatherInformation (cityWeather) {
 
       city = data.name;
       country = data.sys.country;
-      currentWeather = data.weather[0].description;
+      let currentWeather = data.weather[0].description;
       generateContent(city, country, lat, lon, currentWeather) 
     })
     .catch(err => {
