@@ -14,30 +14,73 @@ L.tileLayer("https://api.maptiler.com/maps/streets/256/{z}/{x}/{y}.png?key=cg31I
     `,
 }).addTo(map);
 
-map.on('click', onMapClick);
-
-function onMapClick(event) {
-  let lat = event.latlng.lat;
-  let lon = event.latlng.lng;
-
-  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherApiKey}`)
-    .then(response => response.json())
-    .then(data => {
-      let city = data.name;
-      let country = data.sys.country;
-      let weather = data.weather[0].description;
-      generateContent(city, country, lat, lon, weather);
-    })
-    .catch(err => console.error(err)); 
-}
-
 input.addEventListener("keyup", (event) => {
   tempCity = event.target.value;
 });
 
-function clickModal () {
-  document.querySelector("#btn-modal").click();
+search.addEventListener("click", () => {
+  let getCityWeather = `https://api.openweathermap.org/data/2.5/weather?q=${tempCity}&appid=${openWeatherApiKey}`;
+  fetch(getCityWeather)
+    .then(response => response.json())
+    .then(data => {
+      let lat = data.coord.lat;
+      let lon = data.coord.lon;
+      map.setView(new L.LatLng(lat, lon), 11);
+  
+      let city = data.name;
+      let country = data.sys.country;
+      let weather = data.weather[0].description;
+      generateContent(city, country, lat, lon, weather) 
+    })
+    .catch(err => {
+      alert("No city found")
+    });
+})
+
+input.addEventListener("keyup", (event) => {
+  if (event.keyCode === 13) {
+    search.click();
+  }
+})
+
+function onMapClick(event) {
+  let lat = event.latlng.lat;
+  let lon = event.latlng.lng;
+  
+  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherApiKey}`)
+  .then(response => response.json())
+  .then(data => {
+    let city = data.name;
+    let country = data.sys.country;
+    let weather = data.weather[0].description;
+    generateContent(city, country, lat, lon, weather);
+  })
+  .catch(err => console.error(err)); 
 }
+
+map.on('click', onMapClick);
+
+
+function generateContent (city, country, lat, lon, currentWeather) {
+  info.innerHTML = 
+  (city ? `<p><span>City:</span> ${city}</p>` : "") + 
+  (country ? `<p><span>Country:</span> ${country}</p>` : "") + 
+    `<p id="current-weather" class="mb-3"><span>Current Weather:</span> ${currentWeather}</p>`;
+    if (city) {
+    let popup = L.popup()
+    .setLatLng([lat, lon])
+      .setContent(`
+      <div>
+      <h6 class="text-center">${city}, ${country}</h6>
+        <button class="pb-0 btn btn-success d-block mx-auto" onclick="clickModal()"><h6>Weather info</h6></button>
+      </div>
+      `)
+      .openOn(map);
+    generateWeekTable(lat, lon);
+  } else {
+    alert("No city found")
+  }
+} 
 
 function generateWeekTable (lat, lon) {
   let weekWeather = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${openWeatherApiKey}&units=imperial`;
@@ -70,50 +113,7 @@ function generateWeekTable (lat, lon) {
     .catch(err => console.log(err)); 
 }
 
-function generateContent (city, country, lat, lon, currentWeather) {
-  info.innerHTML = 
-    (city ? `<p><span>City:</span> ${city}</p>` : "") + 
-    (country ? `<p><span>Country:</span> ${country}</p>` : "") + 
-    `<p id="current-weather" class="mb-3"><span>Current Weather:</span> ${currentWeather}</p>`;
-  if (city) {
-    let popup = L.popup()
-      .setLatLng([lat, lon])
-      .setContent(`
-      <div>
-        <h6 class="text-center">${city}, ${country}</h6>
-        <button class="pb-0 btn btn-success d-block mx-auto" onclick="clickModal()"><h6>Weather info</h6></button>
-      </div>
-        `
-      )
-      .openOn(map);
-    generateWeekTable(lat, lon);
-  } else {
-    alert("No city found")
-  }
-} 
-
-search.addEventListener("click", () => {
-  let getCityWeather = `https://api.openweathermap.org/data/2.5/weather?q=${tempCity}&appid=${openWeatherApiKey}`;
-  fetch(getCityWeather)
-    .then(response => response.json())
-    .then(data => {
-      let lat = data.coord.lat;
-      let lon = data.coord.lon;
-      map.setView(new L.LatLng(lat, lon), 11);
-  
-      let city = data.name;
-      let country = data.sys.country;
-      let weather = data.weather[0].description;
-      generateContent(city, country, lat, lon, weather) 
-    })
-    .catch(err => {
-      alert("No city found")
-    });
-})
-
-input.addEventListener("keyup", (event) => {
-  if (event.keyCode === 13) {
-    search.click();
-  }
-})
+function clickModal () {
+  document.querySelector("#btn-modal").click();
+}
 
