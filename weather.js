@@ -27,7 +27,8 @@ function onMapClick(event) {
       let country = data.sys.country;
       let weather = data.weather[0].description;
       generateContent(city, country, lat, lon, weather);
-    }) 
+    })
+    .catch(err => console.error(err)); 
 }
 
 input.addEventListener("keyup", (event) => {

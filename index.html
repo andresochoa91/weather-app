@@ -4,25 +4,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>weather</title>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href= "index.css" rel="stylesheet"></link>
-    <!-- Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
   </head>
   <body>
-
-
     <div class="container mw">
       <div class="trans pt-4 pb-4 jumbotron text-white">
         <h1 class="display-4">City Weather</h1>
         <p class="lead abee">To see the weather, please enter the name of your desired city.</p>
         <hr class="my-2">
-        <div class="input-group mb-3 container" id="yyy">
+        <div class="input-group mb-3 container" id="searchbox">
           <input autocomplete="off" type="text" class="form-control" placeholder="City Name" name="city" id="city">
           <div class="input-group-append">
               <button class="btn btn-outline-info" type="button" id="search">Search</button>
@@ -33,14 +25,12 @@
           <div id="map"></div>
         </div>
       </div>
-
       <!-- Button trigger modal -->
-      <button id="btn-modal" type="button" class="btn btn-primary d-none" data-toggle="modal" data-target="#exampleModal">
+      <button id="btn-modal" type="button" class="btn btn-primary d-none" data-toggle="modal" data-target="#tableModal">
         Launch demo modal
       </button>
-
       <!-- Modal -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="tableModal" tabindex="-1" role="dialog" aria-labelledby="tableModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="bg-dark text-light modal-content">
             <div class="modal-body pb-0">
@@ -62,13 +52,15 @@
                 <tbody>
                 </tbody>
               </table>
-
             </div>
           </div>
         </div>
       </div>
-
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
     <script type="text/javascript" src="weather.js"></script>
   </body>
 </html>
