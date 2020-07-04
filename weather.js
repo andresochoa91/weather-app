@@ -58,8 +58,8 @@ function generateWeekTable (lat, lon) {
         days += `
           <tr>
             <td scope="row">${dayOfWeek}. ${currentDate} ${i === 0 ? "(Today)" : ""}</td>
-            <td scope="row">${min} °F</td>
-            <td scope="row">${max} °F</td>
+            <td scope="row">${min}</td>
+            <td scope="row">${max}</td>
             <td scope="row"><img src="${icon}"></td>
           </tr>
         `;
@@ -78,8 +78,10 @@ function generateContent (city, country, lat, lon, currentWeather) {
     let popup = L.popup()
       .setLatLng([lat, lon])
       .setContent(`
-          <p>${city}, ${country}</p>
-          <button onclick="clickModal()">Weather info</button>
+      <div>
+        <h6 class="text-center">${city}, ${country}</h6>
+        <button class="pb-0 btn btn-success d-block mx-auto" onclick="clickModal()"><h6>Weather info</h6></button>
+      </div>
         `
       )
       .openOn(map);
