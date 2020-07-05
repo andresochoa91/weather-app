@@ -4,22 +4,22 @@ let tbody =  document.querySelector("tbody");
 let info = document.querySelector("#info");
 let input = document.querySelector("#city");
 let search = document.querySelector("#search");
-let tempCity;
+let cityInput;
 let map = L.map("map").setView([37.773972, 	-122.431297], 10);
 
 L.tileLayer("https://api.maptiler.com/maps/streets/256/{z}/{x}/{y}.png?key=cg31IX4S34d8DeEk9ob3", {
   attribution: `
     <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> 
     <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>
-    `,
+  `,
 }).addTo(map);
 
 input.addEventListener("keyup", (event) => {
-  tempCity = event.target.value;
+  cityInput = event.target.value;
 });
 
 search.addEventListener("click", () => {
-  let getCityWeather = `https://api.openweathermap.org/data/2.5/weather?q=${tempCity}&appid=${openWeatherApiKey}`;
+  let getCityWeather = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${openWeatherApiKey}`;
   fetch(getCityWeather)
     .then(response => response.json())
     .then(data => {
@@ -48,24 +48,24 @@ function onMapClick(event) {
   let lon = event.latlng.lng;
   
   fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherApiKey}`)
-  .then(response => response.json())
-  .then(data => {
-    let city = data.name;
-    let country = data.sys.country;
-    let weather = data.weather[0].description;
-    generateContent(city, country, lat, lon, weather);
-  })
-  .catch(err => console.error(err)); 
+    .then(response => response.json())
+    .then(data => {
+      let city = data.name;
+      let country = data.sys.country;
+      let weather = data.weather[0].description;
+      generateContent(city, country, lat, lon, weather);
+    })
+    .catch(err => console.error(err)); 
 }
 
-map.on('click', onMapClick);
+map.on("click", onMapClick);
 
 
 function generateContent (city, country, lat, lon, currentWeather) {
   info.innerHTML = 
   (city ? `<p><span>City:</span> ${city}</p>` : "") + 
   (country ? `<p><span>Country:</span> ${country}</p>` : "") + 
-    `<p id="current-weather" class="mb-3"><span>Current Weather:</span> ${currentWeather}</p>`;
+    `<p id="current-weather" class="mb-3"><span>Current Weather:</span> ${currentWeather.replace(currentWeather[0], currentWeather[0].toUpperCase())}</p>`;
     if (city) {
     let popup = L.popup()
     .setLatLng([lat, lon])
