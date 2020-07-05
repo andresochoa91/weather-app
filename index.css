@@ -1,8 +1,17 @@
-.container{
-  width: 70%;
-  margin: auto;
-  margin-top: 2%;
-  text-align: center;
+@import url('https://fonts.googleapis.com/css2?family=MuseoModerno:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=ABeeZee&display=swap');
+
+body {
+  background: url("./sunset.jpg") no-repeat center center/cover;
+}
+
+h1 {
+  font-family: MuseoModerno;
+  margin-bottom: 20px !important;
+}
+
+p {
+  margin-bottom: 5px;
 }
 
 th{
@@ -10,6 +19,47 @@ th{
 }
 
 img{
-  width: 40px;
+  width: 30px;
   height: auto;
 }
+
+span {
+  font-weight: bold;
+}
+
+h6 {
+  font-size: 0.86rem;
+}
+
+.abee {
+  font-family: ABeeZee;
+}
+
+.trans {
+  background-color: rgba(0,0,0,0.65);
+}
+
+.container{
+  width: 70%;
+  margin: auto;
+  margin-top: 2%;
+  text-align: center;
+}
+
+.mw {
+  width: 100% !important;
+  max-width: 1000px !important;
+}
+
+#searchbox {
+  min-width: 90%;
+}
+
+#map {
+  display: inline-block;
+  margin: auto;
+  height: 320px;
+  width: 600px;
+  max-width: 100%;
+}  
+
