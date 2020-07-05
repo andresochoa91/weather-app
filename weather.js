@@ -25,11 +25,10 @@ search.addEventListener("click", () => {
     .then(data => {
       let lat = data.coord.lat;
       let lon = data.coord.lon;
-      map.setView(new L.LatLng(lat, lon), 11);
-  
       let city = data.name;
       let country = data.sys.country;
       let weather = data.weather[0].description;
+      map.setView(new L.LatLng(lat, lon), 11);
       generateContent(city, country, lat, lon, weather) 
     })
     .catch(err => {
@@ -62,55 +61,65 @@ map.on("click", onMapClick);
 
 
 function generateContent (city, country, lat, lon, currentWeather) {
-  info.innerHTML = 
-  (city ? `<p><span>City:</span> ${city}</p>` : "") + 
-  (country ? `<p><span>Country:</span> ${country}</p>` : "") + 
-    `<p id="current-weather" class="mb-3"><span>Current Weather:</span> ${currentWeather.replace(currentWeather[0], currentWeather[0].toUpperCase())}</p>`;
-    if (city) {
-    let popup = L.popup()
-    .setLatLng([lat, lon])
-      .setContent(`
-      <div>
-      <h6 class="text-center">${city}, ${country}</h6>
-        <button class="pb-0 btn btn-success d-block mx-auto" onclick="clickModal()"><h6>Weather info</h6></button>
-      </div>
-      `)
-      .openOn(map);
+  generateCurrentWeather(city, country, currentWeather);
+  if (city) {
+    generateMapMessage(lat, lon, city, country);
     generateWeekTable(lat, lon);
   } else {
     alert("No city found")
   }
 } 
 
+function generateMapMessage (lat, lon, city, country) {
+  let popup = L.popup()
+  .setLatLng([lat, lon])
+  .setContent(`
+    <div>
+    <h6 class="text-center">${city}, ${country}</h6>
+    <button class="pb-0 btn btn-success d-block mx-auto" onclick="clickModal()"><h6>Weather info</h6></button>
+    </div>
+  `)
+  .openOn(map);
+} 
+
+function generateCurrentWeather (city, country, currentWeather) {
+  currentWeather = currentWeather.replace(/^\b(\w)/g, currentWeather[0].toUpperCase());
+  info.innerHTML = 
+    (city ? `<p><span>City:</span> ${city}</p>` : "") + 
+    (country ? `<p><span>Country:</span> ${country}</p>` : "") + 
+    `<p id="current-weather" class="mb-3"><span>Current Weather:</span> ${currentWeather}</p>`;
+}
+
 function generateWeekTable (lat, lon) {
   let weekWeather = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${openWeatherApiKey}&units=imperial`;
   fetch(weekWeather)
     .then(response => response.json())
-    .then(data => {      
-      let days = "";
-      
-      for (let i = 0; i < data.daily.length; i++) {               
-        let min = data.daily[i].temp.min;
-        let max = data.daily[i].temp.max;
-        let icon = `http://openweathermap.org/img/wn/${data.daily[i].weather[0].icon}@2x.png`;
-        
-        let currentDate = new Date();
-        currentDate.setDate(currentDate.getDate() + i);       
-        let dayOfWeek = (daysOfWeek[currentDate.getDay()]);
-        currentDate = currentDate.toLocaleDateString();         
-
-        days += `
-          <tr>
-            <td scope="row">${dayOfWeek}. ${currentDate} ${i === 0 ? "(Today)" : ""}</td>
-            <td scope="row">${min}</td>
-            <td scope="row">${max}</td>
-            <td scope="row"><img src="${icon}"></td>
-          </tr>
-        `;
-      }
-      tbody.innerHTML = days;
-    })
+    .then(data => getAllWeek(data))
     .catch(err => console.log(err)); 
+}
+  
+function getAllWeek (data) {
+  let days = "";
+  for (let i = 0; i < data.daily.length; i++) {               
+    let min = data.daily[i].temp.min;
+    let max = data.daily[i].temp.max;
+    let icon = `http://openweathermap.org/img/wn/${data.daily[i].weather[0].icon}@2x.png`;
+    
+    let currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + i);       
+    let dayOfWeek = (daysOfWeek[currentDate.getDay()]);
+    currentDate = currentDate.toLocaleDateString();         
+
+    days += `
+      <tr>
+        <td scope="row">${dayOfWeek}. ${currentDate} ${i === 0 ? "(Today)" : ""}</td>
+        <td scope="row">${min}</td>
+        <td scope="row">${max}</td>
+        <td scope="row"><img src="${icon}"></td>
+      </tr>
+    `;
+  }
+  tbody.innerHTML = days;
 }
 
 function clickModal () {
