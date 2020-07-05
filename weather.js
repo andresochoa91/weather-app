@@ -94,8 +94,8 @@ function generateWeekTable (lat, lon) {
   let weekWeather = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${openWeatherApiKey}&units=imperial`;
   fetch(weekWeather)
     .then(response => response.json())
-    .then(data => getAllWeek(data))
-    .catch(err => console.log(err)); 
+    .then(getAllWeek)
+    .catch(err => console.error(err)); 
 }
   
 function getAllWeek (data) {
