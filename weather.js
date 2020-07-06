@@ -46,7 +46,7 @@ const performSearch = () => {
       generateContent(city, country, lat, lon, weather) 
     })
     .catch(err => {
-      console.error(err);
+      console.error(`Error: ${err}`);
       alert("No city found")
     });
 };
