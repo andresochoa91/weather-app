@@ -7,6 +7,20 @@ let search = document.querySelector("#search");
 let cityInput;
 let map = L.map("map").setView([37.773972, 	-122.431297], 10);
 
+map.on("click", (event) => {
+  let lat = event.latlng.lat;
+  let lon = event.latlng.lng;  
+  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherApiKey}`)
+    .then(response => response.json())
+    .then(data => {
+      let city = data.name;
+      let country = data.sys.country;
+      let weather = data.weather[0].description;
+      generateContent(city, country, lat, lon, weather);
+    })
+    .catch(err => console.error(err));
+});
+
 L.tileLayer("https://api.maptiler.com/maps/streets/256/{z}/{x}/{y}.png?key=cg31IX4S34d8DeEk9ob3", {
   attribution: `
     <a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> 
@@ -18,9 +32,9 @@ input.addEventListener("keyup", (event) => {
   cityInput = event.target.value;
 });
 
-search.addEventListener("click", () => {
-  let getCityWeather = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${openWeatherApiKey}`;
-  fetch(getCityWeather)
+const performSearch = () => {
+  let getCityWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&appid=${openWeatherApiKey}`;
+  fetch(getCityWeatherUrl)
     .then(response => response.json())
     .then(data => {
       let lat = data.coord.lat;
@@ -32,35 +46,22 @@ search.addEventListener("click", () => {
       generateContent(city, country, lat, lon, weather) 
     })
     .catch(err => {
+      console.error(`Error: ${err}`);
       alert("No city found")
     });
-})
+};
+
+search.addEventListener("click", () => {
+  performSearch();
+});
 
 input.addEventListener("keyup", (event) => {
   if (event.keyCode === 13) {
-    search.click();
+    performSearch();
   }
-})
+});
 
-function onMapClick(event) {
-  let lat = event.latlng.lat;
-  let lon = event.latlng.lng;
-  
-  fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${openWeatherApiKey}`)
-    .then(response => response.json())
-    .then(data => {
-      let city = data.name;
-      let country = data.sys.country;
-      let weather = data.weather[0].description;
-      generateContent(city, country, lat, lon, weather);
-    })
-    .catch(err => console.error(err)); 
-}
-
-map.on("click", onMapClick);
-
-
-function generateContent (city, country, lat, lon, currentWeather) {
+const generateContent = (city, country, lat, lon, currentWeather) => {
   generateCurrentWeather(city, country, currentWeather);
   if (city) {
     generateMapMessage(lat, lon, city, country);
@@ -68,9 +69,9 @@ function generateContent (city, country, lat, lon, currentWeather) {
   } else {
     alert("No city found")
   }
-} 
+}; 
 
-function generateMapMessage (lat, lon, city, country) {
+const generateMapMessage = (lat, lon, city, country) => {
   let popup = L.popup()
   .setLatLng([lat, lon])
   .setContent(`
@@ -80,25 +81,25 @@ function generateMapMessage (lat, lon, city, country) {
     </div>
   `)
   .openOn(map);
-} 
+}; 
 
-function generateCurrentWeather (city, country, currentWeather) {
+const generateCurrentWeather = (city, country, currentWeather) => {
   currentWeather = currentWeather.replace(/^\b(\w)/g, currentWeather[0].toUpperCase());
   info.innerHTML = 
     (city ? `<p><span>City:</span> ${city}</p>` : "") + 
     (country ? `<p><span>Country:</span> ${country}</p>` : "") + 
     `<p id="current-weather" class="mb-3"><span>Current Weather:</span> ${currentWeather}</p>`;
-}
+};
 
-function generateWeekTable (lat, lon) {
+const generateWeekTable = (lat, lon) => {
   let weekWeather = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&appid=${openWeatherApiKey}&units=imperial`;
   fetch(weekWeather)
     .then(response => response.json())
     .then(getAllWeek)
     .catch(err => console.error(err)); 
-}
+};
   
-function getAllWeek (data) {
+const getAllWeek = (data) => {
   let days = "";
   for (let i = 0; i < data.daily.length; i++) {               
     let min = data.daily[i].temp.min;
@@ -120,9 +121,9 @@ function getAllWeek (data) {
     `;
   }
   tbody.innerHTML = days;
-}
+};
 
-function clickModal () {
+const clickModal = () => {
   document.querySelector("#btn-modal").click();
-}
+};
 
